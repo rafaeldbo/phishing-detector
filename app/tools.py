@@ -236,3 +236,10 @@ def detect_redirects(domain:str):
     
 def known_phishing_domain(domain: str):
     return domain in PHISHING_DOMAINS
+
+def known_brand_domain(domain: str):
+    """Verifica se o domínio é conhecido de alguma marca"""
+    for brand in BRANDS_DOMAINS:
+        if domain == brand or domain.endswith(brand):
+            return True
+    return False

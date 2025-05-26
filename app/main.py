@@ -33,9 +33,22 @@ async def detect_phishing(body: URL) -> dict:
     
     if known_phishing_domain(full_domain):
         return {
-            "phishing": True,
+            "domain": full_domain,
+            "phishing": "Pishing Detectado",
+            "score": 5,
             "analysis": {
                 "known_phishing_domain": ("Suspeita Alta", f"O domínio '{full_domain}' é conhecido por estar associado a phishing")
+            }
+        }
+        
+    deploy_platform = check_deploy_platform(main_domain)
+    if deploy_platform is None and known_brand_domain(full_domain):
+        return {
+            "domain": full_domain,
+            "phishing": "Domínio Parece Seguro",
+            "score": 0,
+            "analysis": {
+                "known_brand_domain": ("Informação", f"O domínio '{full_domain}' é conhecido por estar associado a uma marca legítima")
             }
         }
     
@@ -49,8 +62,6 @@ async def detect_phishing(body: URL) -> dict:
     
     if redirects is None and whois_domain is None and ssl_info is None and safe_browsing_matchs is None:
         raise HTTPException(status_code=502, detail="Não foi possível obter informações do domínio, é provável que o domínio não exista")
-    
-    deploy_platform = check_deploy_platform(main_domain)
     
     levenshtein_domain, levenshtein_domain_distance = domain_levenshtein_distance(full_domain)
     
@@ -81,7 +92,6 @@ async def detect_phishing(body: URL) -> dict:
         
     if whois_domain:
         if whois_domain != deploy_platform:
-            print("Registro WHOIS do domínio:", whois_domain, "obtido através do domínio:", used_domain)
             whois_suspicios = "Sem Suspeitas"
             if (domain_age <= 30): whois_suspicios = "Suspeita Alta"
             elif (domain_age <= 90): whois_suspicios = "Suspeita Moderada"
@@ -141,9 +151,17 @@ async def detect_phishing(body: URL) -> dict:
         elif suspicious == "Suspeita Alta":
             score += 5
         
+    verdict = "Domínio Parece Seguro"
+    if score >= 5:
+        verdict = "Pishing Detectado"
+    elif score >= 3:
+        verdict = "Suspeita de Phishing Moderada"
+    elif score >= 15:
+        verdict = "Suspeita de Phishing Baixa"
+        
     return {
         "domain": full_domain,
-        "phishing": score >= 5,
+        "phishing": verdict,
         "score": score,
         "analysis": data,
     }
