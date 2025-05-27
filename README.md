@@ -38,5 +38,8 @@ npm i
 npm run start
 ```
 
+### *Chaves de API*
+Para realizar a consulta ao [Google Safe Browsing](https://developers.google.com/safe-browsing/?hl=pt_BR) é necessário uma chave de API do google com o serviço `Google Safe Browsing` ativado. Para que a aplicação tenha acessa a essa chave crie um arquivo `.env` no local em que você está executando os comando (onde o repositório foi cloonado) com a variavel `GOOGLE_API_KEY`, como exeplificado no arquivo [.env.exemple](./.env.exemple)`.
+
 ## *Desenvolvedor*
 - Rafael Dourado Bastos de Oliveira
