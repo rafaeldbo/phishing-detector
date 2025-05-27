@@ -1,5 +1,5 @@
 FastAPI[standard]
-BeaultifulSoup4
 python-whois
 requests
 pyOpenSSL
+Levenshtein
