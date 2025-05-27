@@ -87,7 +87,7 @@ async def detect_phishing(body: URL) -> dict:
     if redirects:
         for redirect in redirects:
             _, redirect_url = redirect
-            if main_domain not in treat_url(redirect_url):
+            if name not in treat_url(redirect_url):
                 data["redirects"] = ("Suspeita Moderada", f"Redirecionamento suspeito detectado para '{redirect_url}'")
         
     if whois_domain:
